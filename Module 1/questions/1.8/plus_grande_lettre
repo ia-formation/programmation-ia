@@ -1,0 +1,21 @@
+*name
+plus_grande_lettre
+*in plain str
+bonjour
+boucle while
+cheval
+foutaises
+balivernes
+23
+ : Make sure your code works for the empty string!
+*in secret_plain str
+abcdefghijklmnopqrstuvwyxz
+az09
+0123456789
+*code
+def plus_grande_lettre(word):
+    biggest = ""
+    for c in word:
+        if c > biggest:
+            biggest = c
+    return biggest

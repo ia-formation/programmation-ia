@@ -1,0 +1,20 @@
+*name
+inverse
+*in plain str
+Bonjour
+cheval
+foutaises
+balivernes
+la récursivité est plus amusante que la boucle
+#?*!
+ : Make sure your code works for the empty string!
+*in secret_plain str
+abcdefghijklmnopqrstuvwyxz
+az09
+0123456789
+*code
+def inverse(text):
+    if text == "":
+        return ""
+    else:
+        return inverse(text[1:]) + text[0]
