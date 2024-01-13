@@ -13,9 +13,6 @@ class RNGFormat:
                       "#risn": [0, 1, 2, 3],    # random index small number (inc 0)
                       "#rmn": [6, 7, 8, 9],     # random medium number
                       "#rb": [True, False],     # random boolean
-                      #"#rv": ["dog", "fox", "pig", "egg"],       # random variable name
-                      #"#rst": ['"wolf"', '"fish"', '"lion"'],    # random string
-                      #"#rss": ['"toad "', '"bird "', '"duck "']  # random string with space
                       "#rv": ["chien", "renard", "cochon", "oeuf"],
                       "#rst": ['"loup"', '"poisson"', '"lion"'],
                       "#rss": ['"crapaud "', '"oiseau "', '"canard "']
@@ -90,10 +87,8 @@ class Question:
 
     def get_hint(self, guess):
         if '"' in self.__answer and '"' not in guess and "'" not in guess:
-            #return "Don't forget to use quote marks around string literals"
             return "N'oubliez pas d'utiliser des guillemets autour des chaînes littérales"
         elif guess.lower() == self.__answer.lower():
-            #return "The answer is case sensitive"
             return "La réponse est sensible à la casse"
         else:
             return ""
@@ -115,7 +110,6 @@ class BVQuestion(Question):
     def get_hint(self, guess):
         solution_length = len(self.get_solution())
         if solution_length != len(guess):
-            #return f"The number of underscores shows the length of the correct answer ({solution_length})"
             return f"Le nombre de traits de soulignement indique la longueur de la bonne réponse ({solution_length})"
         return super().get_hint(guess)
 
@@ -176,10 +170,8 @@ class QSEFormat(QuestionFormat):
         exec(formatted_exec)
         formatted_eval = formatted_question[index+1:]
         answer = out_str(eval(formatted_eval))
-        #return Question("After the following code is executed:\n"
         return Question("Une fois le code suivant exécuté:\n"
                         "{}\n"
-                        #"What is the result of the expression below?\n"
                         "Quel est le résultat de l'expression ci-dessous?\n"
                         "{}".format(formatted_exec, formatted_eval),
                         answer)
@@ -214,8 +206,6 @@ class BVFormat(QuestionFormat):
         formatted_question = formatted_question.replace("$" + answer, "_" * len(answer))
 
         return BVQuestion("Le résultat de l'exécution du code suivant est {}.\n"
-        #return BVQuestion("The result of running the following code is {}.\n"
-                          #"What should fill in the blank?\n"
                           "Que faut-il insérer dans l'espace vide ?\n"
                           "{}".format(eval_answer, formatted_question),
                           answer)
@@ -392,60 +382,43 @@ def run(file):
     questions = get_tiered_questions(question_formats)
 
     last_message = "" 
-    
-    
-    questions = questions[:3]
-    
+
     while True:
         for question_number, question in enumerate(questions):
-            #print("Question {} sur {}".format(question_number+1, len(questions)))
-            
             question_message = "** Question {} sur {}**\n".format(question_number+1, len(questions))
             
             unsolved = True
             attempt = 1
             
             while unsolved:
-                #print(question.get_question())
-
                 guess = input(f"{question_message}{last_message}{question.get_question()}\n")
                 guess = guess.strip()
                 if question.is_correct_answer(guess):
-                    #print("Correct!\n")
                     last_message = ""
                     unsolved = False
                 elif guess == "quit":
                     return
-                elif attempt >= 4 and guess == "J'abandonne":
+                elif attempt >= 4 and guess.lower() == "j'abandonne":
                     message = "🔍 La solution est:\n"
                     message += "\t" + question.get_solution() + "\n"
                     message += "Déterminez pourquoi c’est le cas avant de continuer !\n"
                     message += "Veuillez saisir 'Je comprends' (sans les guillemets) pour continuer."
-                    #busywork = input(">>>")
                     busywork = input(message)
-                    while busywork != "Je comprends":
-                        #busywork = input(">>>")
+                    while busywork.lower() != "je comprends" and busywork is not None:
                         busywork = input(message)
                     unsolved = False
                     last_message = ""
                 elif question.get_hint(guess) != "":
-                    #print("Incorrect. " + question.get_hint(guess) + "\n")
                      last_message = "❌ Incorrect. " + question.get_hint(guess) + "\n"
                 else:
-                    #print("Incorrect, essayez à nouveau...\n")
                     last_message = "❌ Incorrect, essayez à nouveau...\n"
-                    #display_message("Incorrect, essayez à nouveau...\n")
 
                 attempt += 1
                 if attempt >= 4 and unsolved:
-                    #print("** Tapez 'J'abandonne' (sans les guillemets) pour voir la solution **\n")
                     last_message = "🔍 Tapez 'J'abandonne' (sans les guillemets) pour voir la solution\n"
 
-        #print("Réponses correctes à toutes les questions ! Excellent travail.")
         response = ""
         while response.lower() not in ["oui", "non,", "o", "n"]:
-            #print("Voulez-vous essayer d'autres questions comme celles-ci ? (O/N)")
-            #response = input(">>>")
             response_message = "🎉 Réponses correctes à toutes les questions ! Excellent travail. 🎉\n\n" 
             response_message += "Voulez-vous essayer d'autres questions comme celles-ci ? (O/N)"
             response = input(response_message)
@@ -460,7 +433,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         raise RuntimeError("Need to provide question file as argument.")
     if len(sys.argv) > 2:
-        # assume multiple arguments means spaces in the path
         filename = " ".join(sys.argv[1:])
     else:
         filename = sys.argv[1]
